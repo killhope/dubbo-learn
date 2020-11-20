@@ -165,11 +165,18 @@ public class ConfigValidationUtils {
      */
     private static final Pattern PATTERN_KEY = Pattern.compile("[*,\\-._0-9a-zA-Z]+");
 
-
+    /**
+     * loadRegistries 方法主要包含如下的逻辑：
+     * 构建参数映射集合，也就是 map
+     * 构建注册中心链接列表
+     * 遍历链接列表，并根据条件决定是否将其添加到 registryList 中
+     */
     public static List<URL> loadRegistries(AbstractInterfaceConfig interfaceConfig, boolean provider) {
         // check && override if necessary
         List<URL> registryList = new ArrayList<URL>();
+        // 获取全局配置
         ApplicationConfig application = interfaceConfig.getApplication();
+        // 获取注册中心配置集合
         List<RegistryConfig> registries = interfaceConfig.getRegistries();
         if (CollectionUtils.isNotEmpty(registries)) {
             for (RegistryConfig config : registries) {
@@ -178,6 +185,7 @@ public class ConfigValidationUtils {
                     address = ANYHOST_VALUE;
                 }
                 if (!RegistryConfig.NO_AVAILABLE.equalsIgnoreCase(address)) {
+                    // 构建参数映射集合，也就是 map
                     Map<String, String> map = new HashMap<String, String>();
                     AbstractConfig.appendParameters(map, application);
                     AbstractConfig.appendParameters(map, config);
@@ -186,8 +194,10 @@ public class ConfigValidationUtils {
                     if (!map.containsKey(PROTOCOL_KEY)) {
                         map.put(PROTOCOL_KEY, DUBBO_PROTOCOL);
                     }
+                    // 解析得到 URL 列表，address 可能包含多个注册中心 ip，
+                    //    因此解析得到的是一个 URL 列表
                     List<URL> urls = UrlUtils.parseURLs(address, map);
-
+                    // 遍历链接列表，并根据条件决定是否将其添加到 registryList 中
                     for (URL url : urls) {
 
                         url = URLBuilder.from(url)

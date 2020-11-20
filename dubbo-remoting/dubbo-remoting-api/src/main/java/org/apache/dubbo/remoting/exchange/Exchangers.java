@@ -111,6 +111,7 @@ public class Exchangers {
 
     public static Exchanger getExchanger(URL url) {
         String type = url.getParameter(Constants.EXCHANGER_KEY, Constants.DEFAULT_EXCHANGER);
+        // 获取 Exchanger 实例，默认为 HeaderExchangeClient
         return getExchanger(type);
     }
 
