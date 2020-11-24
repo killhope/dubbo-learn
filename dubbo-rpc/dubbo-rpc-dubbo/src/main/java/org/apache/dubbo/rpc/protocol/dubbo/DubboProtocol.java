@@ -299,7 +299,7 @@ public class DubboProtocol extends AbstractProtocol {
 
             }
         }
-
+        // 启动服务器
         openServer(url);
         optimizeSerialization(url);
 
@@ -307,7 +307,7 @@ public class DubboProtocol extends AbstractProtocol {
     }
 
     private void openServer(URL url) {
-        // find server.
+        // 获取 host:port，并将其作为服务器实例的 key，用于标识当前的服务器实例
         String key = url.getAddress();
         //client can export a service which's only for server to invoke
         boolean isServer = url.getParameter(IS_SERVER_KEY, true);
@@ -317,11 +317,12 @@ public class DubboProtocol extends AbstractProtocol {
                 synchronized (this) {
                     server = serverMap.get(key);
                     if (server == null) {
+                        // createServer(url) 创建服务器实例:RPC 肯定需要远程调用，默认用 NettyServer
                         serverMap.put(key, createServer(url));
                     }
                 }
             } else {
-                // server supports reset, use together with override
+                // 服务器已创建，则根据 url 中的配置重置服务器
                 server.reset(url);
             }
         }

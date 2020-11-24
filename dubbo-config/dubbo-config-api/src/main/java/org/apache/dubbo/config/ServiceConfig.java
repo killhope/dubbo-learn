@@ -304,11 +304,11 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         if (StringUtils.isEmpty(path)) {
             path = interfaceName;
         }
-        // 多协议多注册中心导出服务
+        //导出服务
         doExportUrls();
     }
 
-    // 多协议多注册中心导出服务
+    // 导出服务
     private void doExportUrls() {
         // 首先将服务导入本地
         ServiceRepository repository = ApplicationModel.getServiceRepository();
@@ -320,7 +320,8 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                 this,
                 serviceMetadata
         );
-        // 加载注册中心链接
+        // 组装幷获取注册中心链接，用 List 接收，说明支持多注册中心
+        // URL 示例：registry://127.0.0.1:2181/com.alibaba.dubbo.registry.RegistryService?application=demo-provider&dubbo=2.0.2&pid=7960&qos.port=22222&registry=zookeeper&timestamp=1598624821286
         List<URL> registryURLs = ConfigValidationUtils.loadRegistries(this, true);
         // 遍历 protocols，并在每个协议下导出服务(组装 url+ 导出 Dubbo 服务)
         for (ProtocolConfig protocolConfig : protocols) {
@@ -550,9 +551,9 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                 .setHost(LOCALHOST_VALUE)
                 .setPort(0)
                 .build();
-        // 先生成 Invoker（PROXY_FACTORY.getInvoker(ref, (Class) interfaceClass, local)）
-        // 再转换成 Exporter
-        // export 就涉及到自适应扩展了。
+        // １.先生成 Invoker　：PROXY_FACTORY.getInvoker(ref, (Class) interfaceClass, local)
+        // ２.再转换成 Exporter
+        // export 方法涉及到自适应扩展了。
         //      Protocol 的 export 方法是标注了 @ Adaptive 注解的，因此会生成代理类，然后代理类会根据 Invoker 里面的 URL 参数得知具体的协议，
         //      然后通过 Dubbo SPI 机制选择对应的实现类进行 export，local 已经设置协议为 injvm，这个方法就会调用 InjvmProtocol#export 方法。
         Exporter<?> exporter = PROTOCOL.export(
