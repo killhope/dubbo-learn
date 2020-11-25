@@ -261,7 +261,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             if (revision != null && revision.length() > 0) {
                 map.put(REVISION_KEY, revision);
             }
-            // 创建该类的的代理（此代理类放置在wapper类的WRAPPER_MAP缓存中）并获取方法
+            // 创建该类的的代理（此代理类放置在 wapper 类的 WRAPPER_MAP 缓存中）并获取方法
             String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
             if (methods.length == 0) {
                 logger.warn("No method found in service interface " + interfaceClass.getName());
@@ -396,7 +396,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                 }
             }
             // REF_PROTOCOL.refer :REF_PROTOCOL 在运行时根据 url 协议头加载指定的 Protocol 实例，并调用实例的 refer 方法
-            // 单个注册中心或服务提供者(服务直连，下同)
+            // 单个注册中心或服务提供者
             if (urls.size() == 1) {
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
             // 多个注册中心或多个服务提供者，或者两者混合
@@ -414,7 +414,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                 if (registryURL != null) { // registry url is available
                     // for multi-subscription scenario, use 'zone-aware' policy by default
                     String cluster = registryURL.getParameter(CLUSTER_KEY, ZoneAwareCluster.NAME);
-                    // The invoker wrap sequence would be: ZoneAwareClusterInvoker(StaticDirectory) -> FailoverClusterInvoker(RegistryDirectory, routing happens here) -> Invoker
+                    // invoker wrap 执行顺序: ZoneAwareClusterInvoker(StaticDirectory) -> FailoverClusterInvoker(RegistryDirectory, routing happens here) -> Invoker
                     // 创建 StaticDirectory 实例，并由 Cluster 对多个 Invoker 进行合并
                     invoker = Cluster.getCluster(cluster, false).join(new StaticDirectory(registryURL, invokers));
                 // 获取直连 invoker
