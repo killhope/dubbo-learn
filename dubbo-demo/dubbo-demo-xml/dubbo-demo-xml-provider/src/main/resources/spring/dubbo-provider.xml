@@ -22,14 +22,16 @@
        http://dubbo.apache.org/schema/dubbo http://dubbo.apache.org/schema/dubbo/dubbo.xsd">
 
     <dubbo:application metadata-type="remote" name="demo-provider"/>
-    <dubbo:metadata-report address="zookeeper://127.0.0.1:2181"/>
+    <dubbo:metadata-report address="zookeeper://127.0.0.1:2182"/>
 
-    <dubbo:registry address="zookeeper://127.0.0.1:2181"/>
+    <dubbo:registry address="zookeeper://127.0.0.1:2182"/>
 
     <dubbo:protocol name="dubbo"/>
 
     <bean id="demoService" class="org.apache.dubbo.demo.provider.DemoServiceImpl"/>
-
     <dubbo:service interface="org.apache.dubbo.demo.DemoService" ref="demoService"/>
+
+    <bean id="greetingService" class="org.apache.dubbo.demo.provider.GreetingServiceImpl"/>
+    <dubbo:service interface="org.apache.dubbo.demo.GreetingService" ref="greetingService"/>
 
 </beans>

@@ -379,6 +379,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                     checkRegistry();
                     // 获取注册中心 url
                     List<URL> us = ConfigValidationUtils.loadRegistries(this, false);
+                    // 注册中心 url：registry://127.0.0.1:2182/org.apache.dubbo.registry.RegistryService?application=demo-consumer&dubbo=2.0.2&pid=19791&qos.port=33333&registry=zookeeper&timestamp=1606361017832
                     if (CollectionUtils.isNotEmpty(us)) {
                         for (URL u : us) {
                             // 尝试获取监控中心 url
@@ -386,7 +387,9 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                             if (monitorUrl != null) {
                                 map.put(MONITOR_KEY, URL.encode(monitorUrl.toFullString()));
                             }
-                            // 添加 refer 参数到 url 中，并将 url 添加到 urls 中
+                            // 将 map 中的内容作为 refer 参数添加到注册中心的 url 中，并将 url 添加到 urls 中
+                            //      refer -> application=demo-consumer&check=false&dubbo=2.0.2&init=false&interface=org.apache.dubbo.demo.DemoService&metadata-type=remote&methods=sayHello,sayHelloAsync&pid=19630&qos.port=33333&register.ip=192.168.130.40&side=consumer&sticky=false&timestamp=1606359539024
+                            // 最终注册中心 url：registry://127.0.0.1:2182/org.apache.dubbo.registry.RegistryService?application=demo-consumer&dubbo=2.0.2&pid=19791&qos.port=33333&refer=application=demo-consumer&check=false&dubbo=2.0.2&init=false&interface=org.apache.dubbo.demo.DemoService&metadata-type=remote&methods=sayHello,sayHelloAsync&pid=19791&qos.port=33333&register.ip=192.168.130.40&side=consumer&sticky=false&timestamp=1606361017685&registry=zookeeper&timestamp=1606361017832
                             urls.add(u.addParameterAndEncoded(REFER_KEY, StringUtils.toQueryString(map)));
                         }
                     }
@@ -395,9 +398,9 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                     }
                 }
             }
-            // REF_PROTOCOL.refer :REF_PROTOCOL 在运行时根据 url 协议头加载指定的 Protocol 实例，并调用实例的 refer 方法
             // 单个注册中心或服务提供者
             if (urls.size() == 1) {
+                // @Adaptive 修饰，根据 url 的 protocol 参数，确定具体哪个实例。比如 protocol=registry,使用 RegistryProtocol
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
             // 多个注册中心或多个服务提供者，或者两者混合
             } else {
