@@ -31,7 +31,10 @@ public class Application {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("spring/dubbo-consumer.xml");
         context.start();
         DemoService demoService = context.getBean("demoService", DemoService.class);
+        String result= demoService.sayHello("test");
+        System.out.println(result);
         CompletableFuture<String> hello = demoService.sayHelloAsync("world");
         System.out.println("result: " + hello.get());
+        System.in.read();
     }
 }

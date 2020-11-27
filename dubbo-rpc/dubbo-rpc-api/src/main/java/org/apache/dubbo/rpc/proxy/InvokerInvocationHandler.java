@@ -72,7 +72,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
             rpcInvocation.put(Constants.CONSUMER_MODEL, consumerModel);
             rpcInvocation.put(Constants.METHOD_MODEL, consumerModel.getMethodModel(method));
         }
-        // 将 method 和 args 封装到 RpcInvocation 中，并执行后续的调用
+        // 将 method 和 args 封装到 RpcInvocation 中，执行 MockClusterInvoker#invoke 方法：MockClusterInvoker 是在引用过程中生成代理类的时候赋值给 InvokerInvocationHandler 的
         return invoker.invoke(rpcInvocation).recreate();
     }
 }

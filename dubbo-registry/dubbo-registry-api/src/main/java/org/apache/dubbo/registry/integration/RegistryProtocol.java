@@ -44,6 +44,7 @@ import org.apache.dubbo.rpc.cluster.Cluster;
 import org.apache.dubbo.rpc.cluster.Configurator;
 import org.apache.dubbo.rpc.cluster.governance.GovernanceRuleRepository;
 import org.apache.dubbo.rpc.cluster.support.MergeableCluster;
+import org.apache.dubbo.rpc.cluster.support.wrapper.MockClusterInvoker;
 import org.apache.dubbo.rpc.model.ApplicationModel;
 import org.apache.dubbo.rpc.model.ProviderModel;
 import org.apache.dubbo.rpc.protocol.InvokerWrapper;
@@ -456,7 +457,7 @@ public class RegistryProtocol implements Protocol {
                 return doRefer(Cluster.getCluster(MergeableCluster.NAME), registry, type, url);
             }
         }
-
+        // 这里最外层的包装类是 MockClusterWrapper，里面是默认的是 FailoverCluster
         Cluster cluster = Cluster.getCluster(qs.get(CLUSTER_KEY));
         // 执行真正的 refer 逻辑
         return doRefer(cluster, registry, type, url);

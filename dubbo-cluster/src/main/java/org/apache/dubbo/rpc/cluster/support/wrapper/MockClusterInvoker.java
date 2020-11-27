@@ -86,7 +86,7 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
         String value = getUrl().getMethodParameter(invocation.getMethodName(), MOCK_KEY, Boolean.FALSE.toString()).trim();
         if (value.length() == 0 || "false".equalsIgnoreCase(value)) {
             // 无 mock 逻辑，直接调用其他 Invoker 对象的 invoke 方法，
-            // 比如 FailoverClusterInvoker
+            // 默认调用 FailoverClusterInvoker#invoke（MockClusterInvoker 里的 invoke 参数也是在服务引入的时候根据配置设置好的）
             result = this.invoker.invoke(invocation);
         } else if (value.startsWith("force")) {
             if (logger.isWarnEnabled()) {
@@ -95,12 +95,8 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
             // force:xxx 直接执行 mock 逻辑，不发起远程调用
             result = doMockInvoke(invocation, null);
         } else {
-            // fail:xxx 表示消费方对调用服务失败后，再执行 mock 逻辑，不抛出异常
             try {
-                // 调用其他 Invoker 对象的 invoke 方法
                 result = this.invoker.invoke(invocation);
-
-                //fix:#4585
                 if(result.getException() != null && result.getException() instanceof RpcException){
                     RpcException rpcException= (RpcException)result.getException();
                     if(rpcException.isBiz()){
