@@ -86,7 +86,7 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
         String value = getUrl().getMethodParameter(invocation.getMethodName(), MOCK_KEY, Boolean.FALSE.toString()).trim();
         if (value.length() == 0 || "false".equalsIgnoreCase(value)) {
             // 无 mock 逻辑，直接调用其他 Invoker 对象的 invoke 方法，
-            // 默认调用 FailoverClusterInvoker#invoke（MockClusterInvoker 里的 invoke 参数也是在服务引入的时候根据配置设置好的）
+            // 默认调用 FailoverClusterInvoker#invoke（MockClusterInvoker 里的 invoke 参数是在服务引入的时候根据配置设置好的）
             result = this.invoker.invoke(invocation);
         } else if (value.startsWith("force")) {
             if (logger.isWarnEnabled()) {
