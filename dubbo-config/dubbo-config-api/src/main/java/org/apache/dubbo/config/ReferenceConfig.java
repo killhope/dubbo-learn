@@ -401,6 +401,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             // 单个注册中心或服务提供者
             if (urls.size() == 1) {
                 // @Adaptive 修饰，根据 url 的 protocol 参数，确定具体哪个实例。比如 protocol=registry,使用 RegistryProtocol
+                //      Protocol 还有包装类，比如 ProtocolFilterWrapper、ProtocolListenerWrapper，它们的 refer 逻辑先于 RegistryProtocol，点进去发现里面都没有将逻辑应用于 RegistryProtocol
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
             // 多个注册中心或多个服务提供者，或者两者混合
             } else {

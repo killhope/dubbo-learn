@@ -178,6 +178,7 @@ public class ZookeeperRegistry extends FailbackRegistry {
                         urls.addAll(toUrlsWithEmpty(url, path, children));
                     }
                 }
+                // 根据 URL 信息通知对应的 listener，RegistryDirectory 会被通知
                 notify(url, listener, urls);
             }
         } catch (Throwable e) {

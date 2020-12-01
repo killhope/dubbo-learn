@@ -182,6 +182,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
         setConsumerUrl(url);
         CONSUMER_CONFIGURATION_LISTENER.addNotifyListener(this);
         serviceConfigurationListener = new ReferenceConfigurationListener(this, url);
+        // ZookeeperRegistry#subscribe
         registry.subscribe(url, this);
     }
 
@@ -252,6 +253,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
                 providerURLs = addressListener.notify(providerURLs, getConsumerUrl(),this);
             }
         }
+        // 逻辑在里面
         refreshOverrideAndInvoker(providerURLs);
     }
 
