@@ -53,6 +53,7 @@ final class HeaderExchangeChannel implements ExchangeChannel {
         if (channel == null) {
             throw new IllegalArgumentException("channel == null");
         }
+        // 这里的 channel 指向的是 NettyClient
         this.channel = channel;
     }
 
@@ -120,18 +121,23 @@ final class HeaderExchangeChannel implements ExchangeChannel {
         return request(request, channel.getUrl().getPositiveParameter(TIMEOUT_KEY, DEFAULT_TIMEOUT), executor);
     }
 
+    // 首先定义了一个 Request 对象，然后再将该对象传给 NettyClient 的 send 方法，进行后续的调用
     @Override
     public CompletableFuture<Object> request(Object request, int timeout, ExecutorService executor) throws RemotingException {
         if (closed) {
             throw new RemotingException(this.getLocalAddress(), null, "Failed to send request " + request + ", cause: The channel " + this + " is closed!");
         }
-        // create request.
+        // 创建 Request 对象
         Request req = new Request();
         req.setVersion(Version.getProtocolVersion());
+        // 双向通信标志为 true
         req.setTwoWay(true);
+        // 这里的 request 变量类型为 RpcInvocation
         req.setData(request);
+        // 创建 DefaultFuture 对象
         DefaultFuture future = DefaultFuture.newFuture(channel, req, timeout, executor);
         try {
+            // NettyClient#send
             channel.send(req);
         } catch (RemotingException e) {
             future.cancel();

@@ -82,6 +82,7 @@ public class HeaderExchangeClient implements ExchangeClient {
 
     @Override
     public CompletableFuture<Object> request(Object request, int timeout) throws RemotingException {
+        // 直接 HeaderExchangeChannel 对象的同签名方法
         return channel.request(request, timeout);
     }
 
@@ -186,6 +187,7 @@ public class HeaderExchangeClient implements ExchangeClient {
         return channel.hasAttribute(key);
     }
 
+    // 心跳
     private void startHeartBeatTask(URL url) {
         if (!client.canHandleIdle()) {
             AbstractTimerTask.ChannelProvider cp = () -> Collections.singletonList(HeaderExchangeClient.this);
@@ -196,6 +198,7 @@ public class HeaderExchangeClient implements ExchangeClient {
         }
     }
 
+    // 重连
     private void startReconnectTask(URL url) {
         if (shouldReconnect(url)) {
             AbstractTimerTask.ChannelProvider cp = () -> Collections.singletonList(HeaderExchangeClient.this);
